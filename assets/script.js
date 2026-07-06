@@ -1,7 +1,19 @@
 const themejs = document.getElementById('themejs'), ajaxURL = themejs.dataset.ajax;
 
-
 document.addEventListener('DOMContentLoaded', () => {
+	//Sticky Header
+	const siteHead = document.getElementById('siteHead');
+	if( siteHead ){
+		document.documentElement.style.setProperty('--headernav', `${siteHead.offsetHeight}px`);
+		if( siteHead.classList.contains('sticky') ) {
+			new IntersectionObserver(([e]) => e.target.classList.toggle('sticked', e.intersectionRatio < 1), {threshold:1}).observe( siteHead );
+		} else if ( siteHead.classList.contains('fixed') ) {
+			const isSticked = () => window.scrollY > 10;
+			siteHead.classList.toggle('sticked', isSticked());
+			window.addEventListener('scroll', () => siteHead.classList.toggle('sticked', isSticked()));
+		}
+	}
+	
 	//Splidejs
 	document.querySelectorAll( '.splide' ).forEach(el => {
 		if( el.dataset.splide ) {
