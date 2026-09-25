@@ -6,7 +6,7 @@
  * @version 6.1.0
  */
 
-namespace Arvand\Tickets;
+namespace Arvand;
 
 final class Tickets {
 	private string $table;

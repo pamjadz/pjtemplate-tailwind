@@ -1,10 +1,16 @@
 {
   "scripts": {
     "dev": "npx @tailwindcss/cli -i ./assets/tailwind.css -o ./assets/stylesheet.css --watch",
-    "build": "npx @tailwindcss/cli -i ./assets/tailwind.css -o ./assets/stylesheet.css --minify"
+    "build": "npx @tailwindcss/cli -i ./assets/tailwind.css -o ./assets/stylesheet.css --minify",
+    "wpstart": "wp-scripts start",
+    "wpbuild": "wp-scripts build"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.11",
-    "tailwindcss": "^4.1.11"
+    "@tailwindcss/cli": "latest",
+    "tailwindcss": "latest",
+		"@wordpress/components": "latest"
+	},
+  "devDependencies": {
+    "@wordpress/scripts": "^33.0.0"
   }
 }

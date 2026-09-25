@@ -2,18 +2,20 @@
 /**
  * Core Functions
  *
- * @author 	Pouriya Amjadzadeh
+ * @author 	Pouria Amjadzadeh
  * @version 3.5.0
- * @package https://arvandec.com
+ * @package Arvand
  */
 
 defined('ABSPATH') || exit;
 
-// Autoload Composer
-// require_once __DIR__ . '/vendor/autoload.php';
-
 define( 'THEMEDIR', trailingslashit( get_template_directory() ) );
 define( 'THEMEURL', trailingslashit( get_template_directory_uri() ) );
+
+// Autoload Composer
+require_once THEMEDIR . 'vendor/autoload.php';
+
+use Arvand\Woocommerce;
 
 add_action( 'after_switch_theme', function(){
 	update_option('thumbnail_size_w', 0);
@@ -35,6 +37,8 @@ add_action( 'after_switch_theme', function(){
 add_action( 'after_setup_theme', function(){
 	global $content_width;
 	$content_width = 1440;
+
+	Woocommerce::instance();
 
 	//Theme Supports
 	add_theme_support('title-tag');
@@ -85,34 +89,47 @@ add_action( 'after_setup_theme', function(){
 
 		if( ! is_admin() ) {
 			wp_deregister_script( 'jquery' );
-			wp_enqueue_script( 'jquery', THEMEURL.'assets/libs/jquery.min.js', [], '3.7.1', [
-				'in_footer'	=> false,
-			]);
+			wp_enqueue_script( 'jquery', theme_assets_url('libs/jquery.min.js'), [], '3.7.1', ['in_footer' => false]);
 
 			wp_dequeue_style('wp-block-library');
 			wp_dequeue_style('wp-block-library-theme');
 			wp_dequeue_style('global-styles');
 		}
 
-		wp_register_style( 'splide', THEMEURL.'assets/libs/splide/splide-core.min.css', [], '4.1.3');
-		wp_register_script( 'splide', THEMEURL.'assets/libs/splide/splide.min.js', [], '4.1.3', [
-			'strategy'	=> 'defer',
-			'in_footer'	=> true,
-		]);
+		wp_register_style('splide', THEMEURL.'assets/libs/splide/splide-core.min.css', [], '4.1.3');
+		wp_register_script('splide', THEMEURL.'assets/libs/splide/splide.min.js', [], '4.1.3', ['strategy' => 'defer', 'in_footer' => true]);
 
 		if ( comments_open() ) wp_enqueue_script('comment-reply');
 
-		wp_enqueue_style( 'stylesheet', THEMEURL.'assets/stylesheet.css' );
-	}, 99 );
+		wp_enqueue_style('stylesheet', theme_assets_url('stylesheet.css') );
+		wp_enqueue_script('arvand-frontend', theme_assets_url('script.min.js'), [], '1.0.0', ['strategy' => 'defer', 'in_footer' => true]);
+		wp_localize_script('arvand-frontend', 'arvand', [
+			'resturl'		=> rest_url(),
+			'ajaxurl'		=> admin_url('admin-ajax.php'),
+			'theme_assets'	=> theme_assets_url(),
+		]);
+		
+		wp_enqueue_script('pjstacks', theme_assets_url('libs/pjstacks.js'), [], '2.5.0', ['strategy' => 'defer', 'in_footer' => true]);
+	}, 100 );
+
+	add_filter( 'wp_default_scripts', function( $scripts ) {
+		if ( empty( $scripts->registered['jquery'] ) ) {
+			return;
+		}
+		$deps = & $scripts->registered['jquery']->deps;
+		$deps = array_diff( $deps, [ 'jquery-migrate' ] );
+	});
 
 	add_action( 'wp_head', function(){
 		//TODO:Preload Font
 		// printf(
-		// 	'<link rel="prefetch" as="font" href="%s" type="%s" crossorigin="anonymous">',
-		// 	THEMEURL .'assets/media/FONTNAME.woff2',
+		// 	'<link rel="prefetch" as="font" href="%s" type="%s" crossorigin="anonymous">%s',
+		// 	theme_assets_url('media/FONTNAME.woff2'),
 		// 	'font/woff2',
+		// 	PHP_EOL
 		// );
-		// echo PHP_EOL;
+		
+		//TODO: Handle Manifset
 		// printf('<link rel="manifest" href="%s">', THEMEURL.'manifest.webmanifest');
 	}, 2);
 
@@ -133,10 +150,6 @@ add_action( 'after_setup_theme', function(){
 	add_action( 'wp_body_open', function(){
 		get_template_part('parts/icons');
 		echo PHP_EOL;
-	}, 99);
-
-	add_action( 'wp_footer', function(){
-		printf('<script id="themejs" src="%s" data-ajax="%s" defer></script>', THEMEURL. 'assets/script.min.js', admin_url('admin-ajax.php') );
 	}, 99);
 
 	register_nav_menus([
@@ -190,19 +203,20 @@ add_action( 'after_setup_theme', function(){
 			}
 		}
 		
-		$callback = $widget['callback'];
-		$orig_params = $params;
+		// TODO: Uncomment if we want collapse widgets or remove it
+		// $callback = $widget['callback'];
+		// $orig_params = $params;
 		
-		$wp_registered_widgets[$widget_id]['callback'] = function() use ($callback, $orig_params) {
-			ob_start();
-			call_user_func_array($callback, $orig_params);
-			$out = ob_get_clean();
-			if (!trim($out)) return;
-			$a = $orig_params[0];
-			$has_title = str_contains($out, $a['before_title']) && str_contains($out, $a['after_title']);
-			$out = preg_replace($has_title ? '/(' . preg_quote($a['after_title'], '/') . ')/' : '/(<div[^>]*class="[^"]*widget[^"]*"[^>]*>)/','$1<div class="widget-content">', $out, 1);
-			echo preg_replace('/(.*)(' . preg_quote($a['after_widget'], '/') . ')/s', '$1</div>$2', $out);
-		};
+		// $wp_registered_widgets[$widget_id]['callback'] = function() use ($callback, $orig_params) {
+		// 	ob_start();
+		// 	call_user_func_array($callback, $orig_params);
+		// 	$out = ob_get_clean();
+		// 	if (!trim($out)) return;
+		// 	$a = $orig_params[0];
+		// 	$has_title = str_contains($out, $a['before_title']) && str_contains($out, $a['after_title']);
+		// 	$out = preg_replace($has_title ? '/(' . preg_quote($a['after_title'], '/') . ')/' : '/(<div[^>]*class="[^"]*widget[^"]*"[^>]*>)/','$1<div class="widget-content">', $out, 1);
+		// 	echo preg_replace('/(.*)(' . preg_quote($a['after_widget'], '/') . ')/s', '$1</div>$2', $out);
+		// };
 		
 		return $params;
 	}, 999);
@@ -222,73 +236,48 @@ add_action( 'after_setup_theme', function(){
 		}
 		return $row_output;
 	}, 10, 3);
-	add_filter( 'pre_get_avatar', function( $avatar, $id_or_email, $args ) {
+	add_filter( 'pre_get_avatar_data', function( $args, $id_or_email ) {
 		$user = false;
-		if( $id_or_email ){
-			if( is_numeric( $id_or_email ) ){
-				$user = get_user_by('id' , $id_or_email);
-			} elseif( is_object($id_or_email) ) {
-				if( isset( $id_or_email->user_id ) ) {
-					$user = get_user_by( 'id' , $id_or_email->user_id );
-				} else {
-					$user = false;
+
+		if (is_numeric($id_or_email)) {
+			$user = get_user_by('id', absint($id_or_email));
+		} elseif (is_string($id_or_email) && is_email($id_or_email)) {
+			$user = get_user_by('email', $id_or_email);
+		} elseif (is_object($id_or_email)) {
+			if ($id_or_email instanceof WP_User) {
+				$user = $id_or_email;
+			} elseif ($id_or_email instanceof WP_Post) {
+				$user = get_user_by('id', $id_or_email->post_author);
+			} elseif ($id_or_email instanceof WP_Comment) {
+				$user = !empty($id_or_email->user_id) ? get_user_by('id', $id_or_email->user_id) : false;
+				if (!$user && !empty($id_or_email->comment_author_email)) {
+					$user = get_user_by('email', $id_or_email->comment_author_email);
 				}
-			} elseif( is_email($id_or_email) ) {
-				$user = get_user_by('email', $id_or_email );   
+			} elseif (isset($id_or_email->user_id) && is_numeric($id_or_email->user_id)) {
+				$user = get_user_by('id', absint($id_or_email->user_id));
+			} elseif (isset($id_or_email->ID) && is_numeric($id_or_email->ID)) {
+				$user = get_user_by('id', absint($id_or_email->ID));
 			}
 		}
 
-		$avatar_src = '<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 24 24"><path fill="#d0d4db" d="M0 0h24v24H0z"/><path fill="rgba(0,0,0,0.25)" d="M12 5.5c-1.7 0-3 1.3-3 3s1.3 3.5 3 3.5 3-2 3-3.6-1.3-2.9-3-2.9m4.4 13.2c1-.7 1.3-2 .6-3a6 6 0 0 0-5-2.7 6 6 0 0 0-5 2.6c-.7 1-.4 2.4.6 3A8 8 0 0 0 12 20a8 8 0 0 0 4.4-1.3"/></svg>';
-		$avatar_src = 'data:image/svg+xml;base64,'.base64_encode( $avatar_src );
-		
-		//TODO:: if want localavatar
-		// if( $user && get_user_meta( $user->ID, 'localavatar', true ) ){
-		// 	$custom_avatar_id = absint( get_user_meta( $user->ID, 'localavatar', true ) );
-		// 	if( $custom_avatar_id ) {
-		// 		$custom_avatar_src = wp_get_attachment_image_url( $custom_avatar_id, 'full' );
-		// 		if( $custom_avatar_src ) {
-		// 			$avatar_src = $custom_avatar_src;
-		// 		}
+		$avatar_src = false;
+		// TODO: Uncomment if need local avatar or remove it
+		// if ( $user instanceof WP_User ) {
+		// 	$localavatar = get_user_meta( $user->ID, 'localavatar', true );
+		// 	if( $localavatar ){
+		// 		$avatar_src = esc_url( $localavatar );
 		// 	}
 		// }
-
-		$attrs = [
-			'src'           => $avatar_src,
-			'alt'           => $args['alt'] ?? '',
-			'width'         => $args['width'] ?? '',
-			'height'        => $args['height'] ?? '',
-			'class'         => is_array($args['class'] ?? '') ? $args['class'] : [$args['class'] ?? ''],
-			'loading'       => $args['loading'] ?? 'lazy',
-			'fetchpriority' => $args['fetchpriority'] ?? '',
-			'decoding'      => $args['decoding'] ?? '',
-		];
-
-		$attrs['class'] = array_merge( ["avatar", "avatar-{$args['size']}"], $attrs['class']);
-		$attrs['class'] = implode(' ', array_filter($attrs['class']));
-
-		if( isset($args['extra_attr']) && is_array($args['extra_attr']) ) {
-			$extra_attrs = array_filter($args['extra_attr'], function($value) {
-				return $value !== null;
-			});
-			$attrs = array_merge($attrs, $extra_attrs);
+		if( ! $avatar_src ){
+			$avatar_src = theme_assets_url( "media/avatar.svg" );
 		}
 
-		$html_attrs = implode(' ', array_filter(array_map(
-			function($k, $v) {
-				if( $v === null || $v === '' || $v === false ) {
-					return '';
-				}
-				if( $v === 0 || $v === '0' ) {
-					return $k . '="' . esc_attr($v) . '"';
-				}
-				return $k . '="' . esc_attr($v) . '"';
-			},
-			array_keys($attrs),
-			$attrs
-		)));
+		$args['url'] = $avatar_src;
+		return $args;
+	}, 999, 2 );
 
-		return "<img {$html_attrs}>";
-	} , 10, 3);
+	// Limit to the last 20 revisions. Change 20 to whatever limit you want.
+	add_filter( 'wp_revisions_to_keep', fn( $limit ) => 5);
 
 	//includes
 	foreach (glob(THEMEDIR.'src/*.php') as $file) require_once $file;
