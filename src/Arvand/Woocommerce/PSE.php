@@ -23,39 +23,29 @@ class PSE extends WP_REST_Controller {
 		]);
 	}
 
-	public function get_products_torob( WP_REST_Request $request ){
+	public function get_products_torob_v1( WP_REST_Request $request ){
 
 	}
 
-	public function get_products_emalls( WP_REST_Request $request ){
-		$paged		= max(1, absint( $request->get_param('page') ));
-		$per_page	= absint( $request->get_param('item_per_page') ) ?: 100;
-		$per_page	= max(1, $per_page);
-		$per_page	= min(100, $per_page);
-		
-		$results = wc_get_products([
-			'limit' => $per_page,
-			'page'  => $paged,
-			'paginate' => true,
-		]);
+	public function get_products_emalls_v1( WP_REST_Request $request ){		
+		$results = $this->get_products( $request->get_param('page'), $request->get_param('item_per_page') );
 
 		$data = [
-			'page_num'		=> $paged,
-			'total_items'	=> $results->total,
-			'pages_count'	=> $results->max_num_pages,
-			'item_per_page'	=> $per_page,
+			'page_num'		=> $results['current_page'],
+			'total_items'	=> $results['total'],
+			'pages_count'	=> $results['max_page'],
+			'item_per_page'	=> $results['per_page'],
 			'products'		=> [],
 		];
 
-		foreach( $results->products as $product ){
+		foreach( $results['products'] as $product ){
 			$cat				= get_primary_term( $product->get_id(), 'product_cat');
 			$guarantee			= '';
-			$display_product	= arvand_select_default_variation( $product );
 			$data['products'][] = [
 				'id'			=> $product->get_id(),
 				'title'			=> $product->get_name(),
-				'price'			=> wc_get_price_to_display( $display_product ),
-				'old_price'		=> $product->is_on_sale() ? wc_get_price_to_display( $display_product, ['price' => $display_product->get_regular_price()] ) : null,
+				'price'			=> wc_get_price_to_display( $product ),
+				'old_price'		=> $product->is_on_sale() ? wc_get_price_to_display( $product, ['price' => $product->get_regular_price()] ) : null,
 				'category'		=> $cat->name ?? '',
 				'image'			=> ( $product->get_image_id() ? wp_get_attachment_image_url( $product->get_image_id(), 'full', false) : wc_placeholder_img_src('full') ),
 				'color'			=> '',
@@ -66,5 +56,24 @@ class PSE extends WP_REST_Controller {
 		}
 
 		wp_send_json($data);
+	}
+
+	private function get_products($page, $limit){
+		$page		= max(1, absint( $page ) );
+		$limit		= max(10, min(100, absint( $limit ) ) );
+
+		$results	= wc_get_products([
+			'limit'		=> $limit,
+			'page'		=> $page,
+			'paginate'	=> true,
+		]);
+
+		return [
+			'current_page'		=> $page,
+			'per_page'			=> $limit,
+			'max_page'			=> $results->max_num_pages,
+			'total'				=> $results->total,
+			'products'			=> $results->products,
+		];
 	}
 }
