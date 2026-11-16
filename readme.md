@@ -10,21 +10,11 @@
 ### Collapse
 
 ```html
-<button
-  class="btn-collapse"
-  aria-expanded="false"
-  aria-controls="collapse-content"
-  id="collapse-button"
->
+<button class="btn-collapse" aria-expanded="false" aria-controls="collapse-content" id="collapse-button">
   Section 1
 </button>
 
-<div
-  id="collapse-content"
-  role="region"
-  aria-labelledby="collapse-button"
-  class="hidden"
->
+<div id="collapse-content" role="region" aria-labelledby="collapse-button" class="hidden">
   <p>Content for section 1</p>
 </div>
 ```
@@ -66,27 +56,13 @@
     </button>
   </div>
 
-  <div
-    id="unstyled-tabs-1"
-    role="tabpanel"
-    aria-labelledby="unstyled-tabs-1-title"
-  >
+  <div id="unstyled-tabs-1" role="tabpanel" aria-labelledby="unstyled-tabs-1-title">
     This is the <em>first</em> item's tab body.
   </div>
-  <div
-    id="unstyled-tabs-2"
-    class="hidden"
-    role="tabpanel"
-    aria-labelledby="unstyled-tabs-2-title"
-  >
+  <div id="unstyled-tabs-2" class="hidden" role="tabpanel" aria-labelledby="unstyled-tabs-2-title">
     This is the <em>second</em> item's tab body.
   </div>
-  <div
-    id="unstyled-tabs-3"
-    class="hidden"
-    role="tabpanel"
-    aria-labelledby="unstyled-tabs-3-title"
-  >
+  <div id="unstyled-tabs-3" class="hidden" role="tabpanel" aria-labelledby="unstyled-tabs-3-title">
     This is the <em>third</em> item's tab body.
   </div>
 </div>
@@ -97,39 +73,15 @@
 ```html
 <div class="accordion">
   <div class="accordion-item">
-    <button
-      class="btn-collapse"
-      aria-expanded="false"
-      aria-controls="section1"
-      id="accordion1id"
-    >
-      Section 1
-    </button>
-    <div
-      id="section1"
-      role="region"
-      aria-labelledby="accordion1id"
-      class="hidden"
-    >
+    <button class="btn-collapse" aria-expanded="false" aria-controls="section1" id="accordion1id">Section 1</button>
+    <div id="section1" role="region" aria-labelledby="accordion1id" class="hidden">
       <p>Content for section 1</p>
     </div>
   </div>
 
   <div class="accordion-item">
-    <button
-      class="btn-collapse"
-      aria-expanded="false"
-      id="accordion2id"
-      aria-controls="section2"
-    >
-      Section 2
-    </button>
-    <div
-      id="section2"
-      role="region"
-      aria-labelledby="accordion2id"
-      class="hidden"
-    >
+    <button class="btn-collapse" aria-expanded="false" id="accordion2id" aria-controls="section2">Section 2</button>
+    <div id="section2" role="region" aria-labelledby="accordion2id" class="hidden">
       <p>Content for section 2</p>
     </div>
   </div>
@@ -146,14 +98,7 @@
 ### Modal
 
 ```html
-<button
-  type="button"
-  data-pjstack="#exampleModal"
-  aria-haspopup="dialog"
-  aria-controls="exampleModal"
->
-  Modal
-</button>
+<button type="button" data-pjstack="#exampleModal" aria-haspopup="dialog" aria-controls="exampleModal">Modal</button>
 
 <div
   id="exampleModal"
@@ -168,9 +113,7 @@
     <div class="modal-content card max-w-2xl rounded-2xl">
       <div class="modal-header">
         <h3 id="exampleModalLabel" class="modal-title">عنوان مودال</h3>
-        <button type="button" class="btn-close" aria-label="بستن مودال">
-          &times
-        </button>
+        <button type="button" class="btn-close" aria-label="بستن مودال">&times</button>
       </div>
       <div class="modal-body"></div>
     </div>
@@ -181,12 +124,7 @@
 ### Offcanvas (right / left / bottom / top)
 
 ```html
-<button
-  type="button"
-  data-pjstack="#offcanvasStart"
-  aria-haspopup="dialog"
-  aria-controls="offcanvasStart"
->
+<button type="button" data-pjstack="#offcanvasStart" aria-haspopup="dialog" aria-controls="offcanvasStart">
   از راست
 </button>
 
@@ -210,14 +148,7 @@
 ### Drawer
 
 ```html
-<button
-  type="button"
-  data-pjstack="#simpleDrawer"
-  aria-haspopup="dialog"
-  aria-controls="simpleDrawer"
->
-  open
-</button>
+<button type="button" data-pjstack="#simpleDrawer" aria-haspopup="dialog" aria-controls="simpleDrawer">open</button>
 
 <div
   id="simpleDrawer"
@@ -233,8 +164,8 @@
     <h3 id="simpleDrawerLabel" class="drawer-title">محتوای طولانی</h3>
   </div>
   <div class="drawer-body">
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tenetur,
-    accusantium id optio voluptates veritatis aliquid quibusdam ut.
+    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tenetur, accusantium id optio voluptates veritatis aliquid
+    quibusdam ut.
   </div>
 </div>
 ```
@@ -267,17 +198,13 @@ $(document).on("submit", "form.arvand-contactform", function (e) {
   e.preventDefault();
   const $FORM = $(this);
   const params = $FORM.serializeArray();
-  $.post(
-    ajaxURL,
-    { action: "arvand_contact_form", form_data: params },
-    function (resp) {
-      if (resp.success) {
-        //Display success message by resp.message
-      } else {
-        //Display error message by resp.message
-      }
-    },
-  );
+  $.post(ajaxURL, { action: "arvand_contact_form", form_data: params }, function (resp) {
+    if (resp.success) {
+      //Display success message by resp.message
+    } else {
+      //Display error message by resp.message
+    }
+  });
 });
 ```
 
@@ -297,19 +224,15 @@ $(document).on("click", "[data-ilikeit] button", function (e) {
   }
 
   $wrap.find("button").prop("disabled", true).find(".count").html("&hellip;");
-  $.post(
-    ajaxURL,
-    { action: "entry_user_reaction", params: params },
-    function (resp) {
-      if (resp.success) {
-        $wrap.find(".btn-like .count").html(resp.data.like);
-        $wrap.find(".btn-dislike .count").html(resp.data.dislike);
-        $btn.toggleClass("fill");
-      } else {
-        alert(resp.data);
-      }
-    },
-  );
+  $.post(ajaxURL, { action: "entry_user_reaction", params: params }, function (resp) {
+    if (resp.success) {
+      $wrap.find(".btn-like .count").html(resp.data.like);
+      $wrap.find(".btn-dislike .count").html(resp.data.dislike);
+      $btn.toggleClass("fill");
+    } else {
+      alert(resp.data);
+    }
+  });
   $wrap.find("button").prop("disabled", false);
 });
 ```
@@ -320,10 +243,7 @@ $(document).on("click", "[data-ilikeit] button", function (e) {
 document.querySelectorAll("[data-scrollspy]").forEach((element) => {
   const wrapper = document.querySelector(element.dataset.scrollspy);
   if (!wrapper) {
-    console.error(
-      "Scrollspy wrapper not found for:",
-      element.dataset.scrollspy,
-    );
+    console.error("Scrollspy wrapper not found for:", element.dataset.scrollspy);
     return;
   }
 
@@ -340,21 +260,21 @@ document.querySelectorAll("[data-scrollspy]").forEach((element) => {
   let spygap = 0;
   let ticking = false;
 
-  sectionData = items
-    .map((link) => {
-      const section = document.querySelector(link.hash);
-      return section
-        ? {
-            link,
-            top: section.offsetTop - 100,
-            bottom: section.offsetTop - 100 + section.offsetHeight,
-          }
-        : null;
-    })
-    .filter(Boolean);
+  const buildCache = () => {
+    sectionData = items
+      .map((link) => {
+        const section = document.querySelector(link.hash);
+        return section
+          ? { link, top: section.offsetTop - 100, bottom: section.offsetTop - 100 + section.offsetHeight }
+          : null;
+      })
+      .filter(Boolean);
 
-  const firstTarget = document.querySelector(firstItem.hash);
-  if (firstTarget) spygap = firstTarget.offsetTop - wrapper.offsetHeight;
+    const firstTarget = document.querySelector(firstItem.hash);
+    if (firstTarget) spygap = firstTarget.offsetTop - wrapper.offsetHeight;
+  };
+
+  buildCache();
 
   window.addEventListener(
     "scroll",
@@ -362,16 +282,10 @@ document.querySelectorAll("[data-scrollspy]").forEach((element) => {
       if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(() => {
-        const y = window.pageYOffset - 100;
-        const foundSection = sectionData.find(
-          (s) => y >= s.top && y <= s.bottom,
-        );
-        const match =
-          y <= spygap
-            ? firstItem
-            : foundSection
-              ? foundSection.link
-              : activeLink;
+        const y = window.pageYOffset;
+        const found = y <= spygap ? firstItem : sectionData.find((s) => y >= s.top && y <= s.bottom);
+        const match = found ? found.link || activeLink : activeLink;
+
         if (match !== activeLink) {
           activeLink.classList.remove("is-active");
           match.classList.add("is-active");
@@ -383,6 +297,12 @@ document.querySelectorAll("[data-scrollspy]").forEach((element) => {
     },
     { passive: true },
   );
+
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(buildCache, 200);
+  });
 });
 ```
 
@@ -418,9 +338,7 @@ document.querySelectorAll("[data-tooltip]").forEach((el) => {
     });
     document.body.appendChild(tip);
     if (el.dataset.tooltipClass) {
-      el.dataset.tooltipClass
-        .split(" ")
-        .forEach((c) => c.trim() && tip.classList.add(c));
+      el.dataset.tooltipClass.split(" ").forEach((c) => c.trim() && tip.classList.add(c));
     }
     const r = el.getBoundingClientRect();
     const tr = tip.getBoundingClientRect();

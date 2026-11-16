@@ -10,13 +10,14 @@
 
 defined('ABSPATH') || exit;
 
-get_template_part('parts/offcanvas', 'mmenu');
+// get_template_part('components/offcanvas', 'mmenu');
 
-if( isset( $args['only_meta'] ) && TRUE === $args['only_meta'] ){
+if( boolval( $args['meta'] ?? false ) ) {
 	wp_footer();
 	echo '</body></html>';
 	return;
 }
+
 ?>
 
 <footer id="siteFoot">

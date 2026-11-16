@@ -23,6 +23,8 @@ final class Woocommerce {
 
 		add_filter('woocommerce_show_addons_page', '__return_false');
 
+		add_filter('woocommerce_general_settings', [$this, 'add_custom_shop_details']);
+
 		//Default Attributes
 		add_filter('woocommerce_product_get_default_attributes', [$this, 'default_best_variation'], 20, 2);
 
@@ -46,18 +48,78 @@ final class Woocommerce {
 		//Save Metas
 		add_action('woocommerce_process_product_meta', [$this, 'save_product_meta'], 10);
 		add_action('woocommerce_save_product_variation', [$this, 'save_variation_meta'], 10, 2);
+
+		// Add PSE Restapi
+		add_action('rest_api_init', [new Woocommerce\PSE(), 'register_endpoints']);
 	}
 
 	private function bootstrap(){
 		Woocommerce\SMS::instance();
-		Woocommerce\BIS::instance();
 		Woocommerce\Search::instance();
+		Woocommerce\Stories::instance();
 		Woocommerce\AttrbiutesGroup::instance();
 	}
 
 	public static function instance(): self {
 		static $instance;
 		return $instance ??= new self();
+	}
+
+	/**
+	 * Add custom store details fields to WooCommerce settings
+	 */
+	public function add_custom_shop_details($settings) {
+		$new_settings = [];
+	
+		foreach ($settings as $setting) {
+			$new_settings[] = $setting;
+			
+			if (isset($setting['id']) && 'woocommerce_store_postcode' === $setting['id']) {
+				$new_settings[] = [
+					'title'    => 'نام حقوقی فروشگاه',
+					'type'     => 'text',
+					'id'       => 'store_details[name]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'desc_tip' => true,
+					'desc'     => 'نام رسمی/حقوقی شرکت یا فروشگاه',
+				];
+				
+				$new_settings[] = [
+					'title'    => 'شماره ثبت/کد اقتصادی',
+					'type'     => 'text',
+					'id'       => 'store_details[registration_number]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'desc_tip' => true,
+					'desc'     => 'شماره ثبت شرکت یا کد اقتصادی',
+				];
+				
+				$new_settings[] = [
+					'title'              => 'شماره تلفن ثابت',
+					'type'               => 'tel',
+					'id'                 => 'store_details[tel]',
+					'css'                => 'min-width:300px;',
+					'default'            => '',
+					'custom_attributes'  => ['dir' => 'ltr'],
+					'desc_tip'           => true,
+					'desc'               => 'شماره تلفن ثابت فروشگاه',
+				];
+				
+				$new_settings[] = [
+					'title'              => 'شماره همراه مدیریت',
+					'type'               => 'tel',
+					'id'                 => 'store_details[admin_phone]',
+					'css'                => 'min-width:300px;',
+					'default'            => '',
+					'custom_attributes'  => ['dir' => 'ltr'],
+					'desc'               => 'از این شماره برای اطلاع‌رسانی سفارشات استفاده می‌شود',
+					'desc_tip'           => true,
+				];
+			}
+		}
+		
+		return $new_settings;
 	}
 
 	/**

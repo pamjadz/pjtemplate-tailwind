@@ -8,9 +8,13 @@
 
 defined('ABSPATH') || exit;
 
-if (!class_exists('WooCommerce')) {
+use Arvand\Woocommerce;
+
+if( ! class_exists('WooCommerce') ) {
 	return;
 }
+
+Woocommerce::instance();
 
 /**
  * Add theme support for WooCommerce
@@ -29,70 +33,12 @@ add_theme_support('woocommerce', [
 ]);
 
 /**
- * Add custom store details fields to WooCommerce settings
- */
-add_filter('woocommerce_general_settings', function($settings) {
-	$new_settings = [];
-	
-	foreach ($settings as $setting) {
-		$new_settings[] = $setting;
-		
-		if (isset($setting['id']) && 'woocommerce_store_postcode' === $setting['id']) {
-			$new_settings[] = [
-				'title'    => 'نام حقوقی فروشگاه',
-				'type'     => 'text',
-				'id'       => 'store_details[name]',
-				'css'      => 'min-width:300px;',
-				'default'  => '',
-				'desc_tip' => true,
-				'desc'     => 'نام رسمی/حقوقی شرکت یا فروشگاه',
-			];
-			
-			$new_settings[] = [
-				'title'    => 'شماره ثبت/کد اقتصادی',
-				'type'     => 'text',
-				'id'       => 'store_details[registration_number]',
-				'css'      => 'min-width:300px;',
-				'default'  => '',
-				'desc_tip' => true,
-				'desc'     => 'شماره ثبت شرکت یا کد اقتصادی',
-			];
-			
-			$new_settings[] = [
-				'title'              => 'شماره تلفن ثابت',
-				'type'               => 'tel',
-				'id'                 => 'store_details[tel]',
-				'css'                => 'min-width:300px;',
-				'default'            => '',
-				'custom_attributes'  => ['dir' => 'ltr'],
-				'desc_tip'           => true,
-				'desc'               => 'شماره تلفن ثابت فروشگاه',
-			];
-			
-			$new_settings[] = [
-				'title'              => 'شماره همراه مدیریت',
-				'type'               => 'tel',
-				'id'                 => 'store_details[admin_phone]',
-				'css'                => 'min-width:300px;',
-				'default'            => '',
-				'custom_attributes'  => ['dir' => 'ltr'],
-				'desc'               => 'از این شماره برای اطلاع‌رسانی سفارشات استفاده می‌شود',
-				'desc_tip'           => true,
-			];
-		}
-	}
-	
-	return $new_settings;
-});
-
-/**
  * Remove default WooCommerce inline styles
  */
+add_filter('woocommerce_enqueue_styles', '__return_empty_array');
 add_action('wp_print_styles', function() {
 	wp_style_add_data('woocommerce-inline', 'after', '');
 });
-
-add_filter('woocommerce_enqueue_styles', '__return_empty_array');
 
 /**
  * Dequeue unnecessary WooCommerce blocks styles and scripts

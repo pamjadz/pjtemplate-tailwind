@@ -28,7 +28,7 @@ defined('ABSPATH') || exit;
 <body <?php body_class(); ?>>
 <?php
 wp_body_open();
-if( isset($args['only_meta']) && TRUE === $args['only_meta'] ) return;
+if( boolval( $args['meta'] ?? false ) ) return;
 ?>
 
 <header<?php header_class(); ?>></header>

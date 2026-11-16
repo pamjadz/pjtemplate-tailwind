@@ -1,24 +1,24 @@
 <?php
+/**
+ * WooCommerce Product Search
+ *
+ * @package Arvand\Woocommerce
+ */
 
-defined('ABSPATH') || exit;
+namespace Arvand\Woocommerce;
 
-class ArvandRESTAPI extends WP_REST_Controller {
-	const namespace = 'arvand';
+defined( 'ABSPATH' ) || exit;
 
-	public function __construct() {
-		add_action('rest_api_init', [$this, 'register_endpoints']);
-	}
-
+class PSE extends WP_REST_Controller {
 	public function register_endpoints(){
-		if( ! class_exists('woocommerce') ) return;
-		register_rest_route(self::namespace, '/pse/torob', [
+		register_rest_route('arvand/v1', '/pse/torob', [
 			'methods'				=> WP_REST_Server::READABLE,
-			'callback'				=> [$this, 'get_products_torob'],
+			'callback'				=> [$this, 'get_products_torob_v1'],
 			'permission_callback'	=> '__return_true',
 		]);
-		register_rest_route(self::namespace, '/pse/emalls', [
+		register_rest_route('arvand/v1', '/pse/emalls', [
 			'methods'				=> WP_REST_Server::READABLE,
-			'callback'				=> [$this, 'get_products_emalls'],
+			'callback'				=> [$this, 'get_products_emalls_v1'],
 			'permission_callback'	=> '__return_true',
 		]);
 	}
@@ -68,7 +68,3 @@ class ArvandRESTAPI extends WP_REST_Controller {
 		wp_send_json($data);
 	}
 }
-
-add_action( 'rest_api_init', function(){
-	new ArvandRESTAPI();
-});
