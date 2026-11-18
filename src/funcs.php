@@ -210,23 +210,13 @@ if( ! function_exists('sanitize_natid_ir') ) {
 		if( $code[0] == $code[1] && preg_match( '/^(\d)\1{9}$/', $code ) ) {
 			return false;
 		}
-		
-		$sum = 0;
-		for( $i = 0; $i < 9; $i++ ) {
-			$sum += ( $code[$i] * (10 - $i) );
-		}
-		
-		$remainder = $sum % 11;
-		$control = $code[9];
 
-		$valid = ( $remainder < 2 && $control == $remainder ) || ( $remainder >= 2 && $control == (11 - $remainder) );
-
-		return $valid ? $code : false;
+		return $code;
 	}
 }
 
 if( ! function_exists('natid_exists') ){
-	function natid_exists( $natid = '' ): boolean {
+	function natid_exists( $natid = '' ): int|bool {
 		$meta	= 'natid';
 		$natid	= sanitize_natid_ir( $natid );
 		if( $natid ){

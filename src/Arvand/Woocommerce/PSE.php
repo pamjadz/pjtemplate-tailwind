@@ -9,7 +9,7 @@ namespace Arvand\Woocommerce;
 
 defined( 'ABSPATH' ) || exit;
 
-class PSE extends WP_REST_Controller {
+class PSE extends \WP_REST_Controller {
 	public function register_endpoints(){
 		register_rest_route('arvand/v1', '/pse/torob', [
 			'methods'				=> WP_REST_Server::READABLE,

@@ -2,18 +2,19 @@
 
 - کلیه فایل‌های چندرسانه‌ای (تصاویر، ویدئو، صوت و ...) را در مسیر `assets/media` قرار دهید.
 - کتابخانه‌ها را در مسیر `assets/libs` قرار دهید. برای هر کتابخانه یک پوشه با نام همان کتابخانه ایجاد کرده و سپس آن را **enqueue** کنید.
-- فایل‌های موجود در مسیر `src/inc` به‌صورت خودکار در هسته پوسته فراخوانی می‌شوند.
-- اگر پروژه ووکامرسی هست کلیه هوک ها و توابع را در فایل src/inc/woo.php قرار دهید. درغیر این صورت فایل را حذف کنید.
+- فایل‌های موجود در مسیر `src/` به‌صورت خودکار در هسته پوسته فراخوانی می‌شوند.
+- اگر پروژه ووکامرسی هست کلیه هوک ها و توابع را در فایل src/woo.php قرار دهید. درغیر این صورت فایل را حذف کنید.
 
 ---
+
+```bash
+pnpm add @wordpress/scripts
+```
 
 ### Collapse
 
 ```html
-<button class="btn-collapse" aria-expanded="false" aria-controls="collapse-content" id="collapse-button">
-  Section 1
-</button>
-
+<button class="btn-collapse" aria-expanded="false" aria-controls="collapse-content" id="collapse-button">Section 1</button>
 <div id="collapse-content" role="region" aria-labelledby="collapse-button" class="hidden">
   <p>Content for section 1</p>
 </div>
@@ -24,34 +25,13 @@
 ```html
 <div class="tablist">
   <div role="tablist" aria-orientation="horizontal|vertical">
-    <button
-      type="button"
-      class="btn-collapse"
-      id="unstyled-tabs-1-title"
-      aria-selected="true"
-      aria-controls="unstyled-tabs-1"
-      role="tab"
-    >
+    <button type="button" class="btn-collapse" id="unstyled-tabs-1-title" aria-selected="true" aria-controls="unstyled-tabs-1" role="tab">
       Tab 1
     </button>
-    <button
-      type="button"
-      class="btn-collapse"
-      id="unstyled-tabs-2-title"
-      aria-selected="false"
-      aria-controls="unstyled-tabs-2"
-      role="tab"
-    >
+    <button type="button" class="btn-collapse" id="unstyled-tabs-2-title" aria-selected="false" aria-controls="unstyled-tabs-2" role="tab">
       Tab 2
     </button>
-    <button
-      type="button"
-      class="btn-collapse"
-      id="unstyled-tabs-3-title"
-      aria-selected="false"
-      aria-controls="unstyled-tabs-3"
-      role="tab"
-    >
+    <button type="button" class="btn-collapse" id="unstyled-tabs-3-title" aria-selected="false" aria-controls="unstyled-tabs-3" role="tab">
       Tab 3
     </button>
   </div>
@@ -100,15 +80,7 @@
 ```html
 <button type="button" data-pjstack="#exampleModal" aria-haspopup="dialog" aria-controls="exampleModal">Modal</button>
 
-<div
-  id="exampleModal"
-  class="modal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
-  aria-modal="true"
->
+<div id="exampleModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" aria-modal="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content card max-w-2xl rounded-2xl">
       <div class="modal-header">
@@ -124,19 +96,9 @@
 ### Offcanvas (right / left / bottom / top)
 
 ```html
-<button type="button" data-pjstack="#offcanvasStart" aria-haspopup="dialog" aria-controls="offcanvasStart">
-  از راست
-</button>
+<button type="button" data-pjstack="#offcanvasStart" aria-haspopup="dialog" aria-controls="offcanvasStart">Canvas</button>
 
-<div
-  id="offcanvasStart"
-  class="offcanvas offcanvas-right"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="offcanvasStartLabel"
-  aria-hidden="true"
-  aria-modal="true"
->
+<div id="offcanvasStart" class="offcanvas offcanvas-right" tabindex="-1" role="dialog" aria-labelledby="offcanvasStartLabel" aria-hidden="true" aria-modal="true">
   <div class="offcanvas-header">
     <h3 id="offcanvasStartLabel" class="offcanvas-title">منوی کناری</h3>
     <button type="button" class="btn-close" aria-label="بستن منو"></button>
@@ -150,15 +112,7 @@
 ```html
 <button type="button" data-pjstack="#simpleDrawer" aria-haspopup="dialog" aria-controls="simpleDrawer">open</button>
 
-<div
-  id="simpleDrawer"
-  class="drawer"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="simpleDrawerLabel"
-  aria-hidden="true"
-  aria-modal="true"
->
+<div id="simpleDrawer" class="drawer" tabindex="-1" role="dialog" aria-labelledby="simpleDrawerLabel" aria-hidden="true" aria-modal="true">
   <div class="drawer-handle" aria-label="دستگیره کشو" role="separator"></div>
   <div class="drawer-header">
     <h3 id="simpleDrawerLabel" class="drawer-title">محتوای طولانی</h3>
@@ -352,25 +306,6 @@ document.querySelectorAll("[data-tooltip]").forEach((el) => {
 });
 ```
 
-### Expand More Content
-
-```javascript
-document.querySelectorAll(".limit-maxheight").forEach(function (container) {
-  const content = container.querySelector(".content");
-  const btn = container.querySelector(".more-button");
-
-  let maxH = parseFloat(getComputedStyle(content).maxHeight);
-  if (isNaN(maxH)) maxH = 150;
-  if (content.scrollHeight > maxH + 1) {
-    btn.disabled = false;
-    btn.onclick = () => {
-      content.style.maxHeight = "none";
-      btn.remove();
-    };
-  }
-});
-```
-
 ```css
 .tooltip {
   @apply absolute opacity-0 z-9999 text-card bg-foreground rounded-lg py-1.5 px-2 text-xs transition-opacity;
@@ -385,6 +320,26 @@ document.querySelectorAll(".limit-maxheight").forEach(function (container) {
     border-color: var(--color-foreground) transparent transparent transparent;
   }
 }
+```
+
+### Expand More Content
+
+```javascript
+document.querySelectorAll(".limit-maxheight").forEach(function (container) {
+  const content = container.querySelector(".content");
+  const btn = container.querySelector(".more-button");
+  if( ! content ){
+    return
+  }
+  let maxH = parseFloat(getComputedStyle(content).maxHeight || 150);
+  if (content.scrollHeight > maxH + 1) {
+    btn.disabled = false;
+    btn.onclick = () => {
+      content.style.maxHeight = "none";
+      btn.remove();
+    };
+  }
+});
 ```
 
 ### Form Validation
